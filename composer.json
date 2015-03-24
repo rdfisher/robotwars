@@ -1,0 +1,13 @@
+{
+    "name": "rdfisher/robotwars",
+    "description": "",
+    "require": {
+        "react/react": "v0.4.2"
+    },
+    "autoload": {
+        "psr-0": {"Robotwars\\": "src/"}
+    },
+    "config": {
+        "bin-dir": "bin"
+    }
+}
