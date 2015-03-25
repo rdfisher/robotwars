@@ -10,7 +10,16 @@ $socket = new React\Socket\Server($loop);
 $socket->on('connection', function ($conn)  use ($serverState) {
     $serverConnection = null;
     
-    $conn->on('data', function ($data) use ($conn, &$serverConnection, $serverState) {
+    $cleanup = function() use ($conn, &$serverConnection, $serverState) {
+        if ($serverConnection) {
+            $robot = $serverConnection->getRobot();
+            $serverState->getArena()->removeRobot($robot);
+            $serverState->removeConnection($serverConnection);
+        }
+        $conn->close();
+    };
+    
+    $conn->on('data', function ($data) use ($conn, &$serverConnection, $serverState, $cleanup) {
         $arena = $serverState->getArena();
         if (! $serverConnection) {
             $name = trim($data);
@@ -22,19 +31,30 @@ $socket->on('connection', function ($conn)  use ($serverState) {
             $robot = $serverConnection->getRobot();
             try {
                 $command = $commandInterpreter->getCommand($data);
-                
                 $serverConnection->setCommand($command);
                 
                 if ($serverState->readyToAct()) {
                     $serverState->act();
                 }
             } catch (Exception $ex) {
-                $conn->write($ex->getMessage());
-                $serverState->removeConnection($serverConnection);
                 $conn->close();
             }
         }
     });
+    
+    $conn->on('close', $cleanup);
+    $conn->on('error', $cleanup);
 });
 $socket->listen(1337);
+
+//http server returning arena state
+$detailsSocket = new React\Socket\Server($loop);
+$http = new React\Http\Server($detailsSocket);
+$http->on('request', function ($request, $response) use ($serverState) {
+    $headers = array('Content-Type' => 'application/json');
+    $response->writeHead(200, $headers);
+    $response->end(json_encode($serverState->getArena()->toArray()));
+});
+$detailsSocket->listen(8080);
+
 $loop->run();
