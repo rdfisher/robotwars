@@ -91,7 +91,7 @@ class State
             if (count($robotsAtLocation) > 1) {
                 foreach ($robotsAtLocation as $robotAtLocation) {
                     $robotAtLocation->applyDamage();
-                    if (! $robotIsAlive) {
+                    if (! $robotAtLocation->isAlive()) {
                         $arena->removeRobot($robot);
                         $this->removeConnection($connection);
                         $socket = $connection->getSocket();
@@ -119,7 +119,7 @@ class State
                 
                 foreach ($targets as $target) {
                     $target->applyDamage();
-                    if (! $robotIsAlive) {
+                    if (! $target->isAlive()) {
                         $arena->removeRobot($robot);
                         $this->removeConnection($connection);
                         $socket = $connection->getSocket();

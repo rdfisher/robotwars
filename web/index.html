@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Arena</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            #arena {
+                width: 600px;
+            }
+            #arena table {
+                float: left;
+            }
+            #list {
+                float: right;
+            }
+            #list ul {
+                float: left;
+            }
+            #arena td {
+                border: 1px solid black;
+                height: 40px;
+                width: 40px;
+                text-align: center;
+                vertical-align: middle;
+            }
+            .robotName {
+                font-size: 12px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="arena"></div>
+        <script src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+        <script>
+            var render = function(data) {
+                var container = $('#arena');
+                var html = '<table>';
+                for (var y=0; y < data.height; y++) {
+                    html += '<tr>';
+                    for (var x=0; x < data.height; x++) {
+                        html += '<td>&nbsp;</td>';
+                    }
+                    html += '</tr>';
+                }
+                html += '</table>';
+                html += '<div id="list"><ul></ul></div>'
+                container.html(html);
+                
+                var list = $('#list');
+                var listHtml = '';
+                
+                $.each(data.robots, function(i, robot) {
+                    var rowNumber = 9 - robot.location.y;
+                    var cellNumber = robot.location.x;
+                    
+                    var row = $('tr', container).eq(rowNumber);
+                    var cell = $('td', row).eq(cellNumber);
+                    
+                    var glyph = '^';
+                    if (robot.facing == 'south') glyph = 'v';
+                    if (robot.facing == 'east') glyph = '>';
+                    if (robot.facing == 'west') glyph = '<';
+                    glyph += '<br /><span class="robotName">' + robot.name + '</span>';
+                    cell.html(glyph);
+                    
+                    listHtml += '<li>' + robot.name + ' [' + robot.health + ']' + '</li>';
+                    
+                });
+                
+                list.html(listHtml);
+            };
+            
+            var load = function() {
+                $.get('/arena', render);
+            };
+            
+            $(load);
+            
+            setInterval(load, 1000);
+        </script>
+    </body>
+</html>

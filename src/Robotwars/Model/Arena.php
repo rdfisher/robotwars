@@ -70,8 +70,8 @@ class Arena
         $location = null;
         
         while (! $location) {
-            $x = rand(0, $this->getWidth());
-            $y = rand(0, $this->getHeight());
+            $x = rand(0, $this->getWidth() - 1);
+            $y = rand(0, $this->getHeight() -1);
             $potentialLocation = new Location($x, $y);
             $inhabitants = $this->getRobotsAt($potentialLocation);
             if (empty($inhabitants)) {

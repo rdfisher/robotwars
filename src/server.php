@@ -47,13 +47,27 @@ $socket->on('connection', function ($conn)  use ($serverState) {
 });
 $socket->listen(1337);
 
-//http server returning arena state
+//http server
 $detailsSocket = new React\Socket\Server($loop);
 $http = new React\Http\Server($detailsSocket);
 $http->on('request', function ($request, $response) use ($serverState) {
-    $headers = array('Content-Type' => 'application/json');
-    $response->writeHead(200, $headers);
-    $response->end(json_encode($serverState->getArena()->toArray()));
+    $serve = function($content, $type, $code = 200) use ($response) {
+        $headers = array('Content-Type' => $type);
+        $response->writeHead($code, $headers);
+        $response->end($content);
+    };
+    switch($request->getPath()) {
+        case '/arena': 
+            $serve(json_encode($serverState->getArena()->toArray()), 'application/json');
+            break;
+        case '/':
+            $serve(file_get_contents('../web/index.html'), 'text/html');
+            break;
+        default:
+            $serve('Not Found', 'text/html', 404);
+            break;
+    }
+        
 });
 $detailsSocket->listen(8080);
 

@@ -2,7 +2,7 @@
 namespace Robotwars\Model\Command;
 use Robotwars\Model\Command;
 
-class MoveForward implements Command
+class Stop implements Command
 {
     public function getNewFacing(\Robotwars\Model\Facing $facing)
     {
