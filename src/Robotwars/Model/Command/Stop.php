@@ -14,5 +14,10 @@ class Stop implements Command
         return $location;
     }
 
+    public function __toString()
+    {
+        return 'stop';
+    }
+
 }
 

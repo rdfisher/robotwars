@@ -27,4 +27,9 @@ class TurnLeft implements Command
         return $location;
     }
 
+    public function __toString()
+    {
+        return 'left';
+    }
+
 }

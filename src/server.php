@@ -20,6 +20,7 @@ $socket->on('connection', function ($conn)  use ($serverState) {
     };
     
     $conn->on('data', function ($data) use ($conn, &$serverConnection, $serverState, $cleanup) {
+        var_dump($data);
         $arena = $serverState->getArena();
         if (! $serverConnection) {
             $name = trim($data);

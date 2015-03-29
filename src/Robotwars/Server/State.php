@@ -6,11 +6,13 @@ class State
 {
     private $connections;
     private $arena;
+    private $minConnections;
     
-    public function __construct(Arena $arena)
+    public function __construct(Arena $arena, $minConnections = 2)
     {
         $this->connections = new \SplObjectStorage();
         $this->arena = $arena;
+        $this->minConnections = $minConnections;
     }
     
     public function addConnection(Connection $connection)
@@ -35,6 +37,10 @@ class State
     
     public function readyToAct()
     {
+        if (count($this->connections) < $this->minConnections) {
+            return false;
+        }
+        
         foreach ($this->connections as $connection) {
             if (! $connection->hasCommand()) {
                 return false;
@@ -142,6 +148,7 @@ class State
     
     public function render()
     {
+        return;
         passthru('clear');
         $line = array_fill(0, $this->arena->getWidth(), '.');
         $grid = array_fill(0, $this->arena->getHeight(), $line);

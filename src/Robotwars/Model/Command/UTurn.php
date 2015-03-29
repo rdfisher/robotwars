@@ -27,4 +27,8 @@ class UTurn implements Command
         return $location;
     }
 
+    public function __toString()
+    {
+        return 'u-turn';
+    }
 }

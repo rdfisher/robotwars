@@ -32,5 +32,10 @@ class MoveForward implements Command
         return new \Robotwars\Model\Location($x, $y);
     }
 
+    public function __toString()
+    {
+        return 'forward';
+    }
+
 }
 
