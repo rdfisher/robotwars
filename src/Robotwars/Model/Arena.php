@@ -27,6 +27,9 @@ class Arena
     
     public function addRobot(Robot $robot)
     {
+        if ($this->getRobotByName($robot->getName())) {
+            throw new \Exception('A robot with that name exists.');
+        }
         $this->robots[] = $robot;
     }
     

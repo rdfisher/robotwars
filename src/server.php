@@ -23,8 +23,12 @@ $socket->on('connection', function ($conn)  use ($serverState) {
         $arena = $serverState->getArena();
         if (! $serverConnection) {
             $name = trim($data);
-            $serverConnection = new Robotwars\Server\Connection($name, $arena, $conn);
-            $serverState->addConnection($serverConnection);
+            try {
+                $serverConnection = new Robotwars\Server\Connection($name, $arena, $conn);
+                $serverState->addConnection($serverConnection);
+            } catch (\Exception $e) {
+                $conn->close();
+            }
             $conn->write(json_encode($arena->toArray())) . "\n";
         } else {
             $commandInterpreter = new \Robotwars\Server\CommandInterpreter();
